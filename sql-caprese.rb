@@ -33,21 +33,19 @@ SQL
 db.execute(create_table_pom)
 db.execute(create_table_tags)
 
-#some test entries
-db.execute("INSERT INTO pomodoros(pomDate, pomTime, tags,description) VALUES ('2016-07-19','1:30 PM', 'python','automate the boring stuff')")
-db.execute("INSERT INTO pomodoros(pomDate, pomTime, tags,description) VALUES ('2016-07-20','2:30 PM','ruby','Sandi Metz book')")
-db.execute("INSERT INTO tags(name) VALUES('python')")
-db.execute("INSERT INTO tags(name) VALUES('ruby')")
-
 #Users should be able to
   #Add pomodoros
+  def add_pomodoro(db,pomDate,pomTime,tags,description)
+    db.execute("INSERT INTO pomodoros (pomDate, pomTime, tags, description) VALUES (?,?,?,?)", [pomDate, pomTime, tags, description])
     #some method that reads the tags and adds them to the tags table
+  end
+
   #View all pomodoros
   def view_all_poms(db)
     poms = db.execute("SELECT * FROM pomodoros")
     tags = db.execute("SELECT * FROM tags")
     poms.each do |pom|
-      puts "#{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
+      puts "#{pom['id']} | #{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
     end
   end
 
@@ -56,11 +54,17 @@ db.execute("INSERT INTO tags(name) VALUES('ruby')")
     #tag
       #need to write some method that splits up a list of tags
 
-#Somewhere down here will be a user interface
-
-view_all_poms(db)
-
   #LAAAAAATER stuff
     #Edit pomodoros
-      #
     #Delete pomodoros
+
+#Somewhere down here will be a user interface
+
+#driver code for testing
+add_pomodoro(db,'2016-07-19','1:30 PM', 'python','automate the boring stuff')
+add_pomodoro(db,'2016-07-20','2:30 PM','ruby','Sandi Metz book')
+view_all_poms(db)
+db.execute("INSERT INTO tags(name) VALUES('python')")
+db.execute("INSERT INTO tags(name) VALUES('ruby')")
+
+
