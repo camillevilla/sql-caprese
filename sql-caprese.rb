@@ -40,22 +40,23 @@ db.execute(create_table_tags)
     #some method that reads the tags and adds them to the tags table
   end
 
-  #GAH all this ugly repetitive code. Eventually refactor and separate pretty print into a separate method.
+  #pretty print 
+  def pretty_print_poms(selection)
+    selection.each do |pom|
+      puts "#{pom['id']} | #{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
+    end
+  end
   #View all pomodoros
   def view_all_poms(db)
     poms = db.execute("SELECT * FROM pomodoros")
-    poms.each do |pom|
-      puts "#{pom['id']} | #{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
-    end
+    pretty_print_poms(poms)
   end
 
   #filter pomodoros by  
     #date
     def poms_by_date(db,pomDate)
       poms = db.execute("SELECT * FROM pomodoros WHERE pomDate=?", [pomDate])
-      poms.each do |pom|
-        puts "#{pom['id']} | #{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
-      end
+      pretty_print_poms(poms)
     end
 
     #date range
@@ -66,7 +67,14 @@ db.execute(create_table_tags)
       #need to write some method that splits up a list of tags
 
   #explore individual pomodoro
- 
+   #figure out the TypeError...can't understand whether the direction is string -> integer or string <- integer
+    def poms_by_id(db,id)
+      poms = db.execute("SELECT * FROM pomodoros WHERE id=?", [id])
+      #poms.each do |pom|
+        puts "#{poms['id']} | #{poms['pomDate']} | #{poms['pomTime']} | #{poms['tags']} | #{poms['description']}"
+      #end
+    end
+
 
   #LAAAAAATER stuff
     #Edit pomodoros
