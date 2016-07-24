@@ -1,3 +1,4 @@
+#Ruby 2.1.5
 #practicing using SQL + Ruby for Challenge 8.5
 #an app for logging pomodoros
 
@@ -33,13 +34,13 @@ db.execute(create_table_pom)
 db.execute(create_table_tags)
 
 # === METHOD DEFINITIONS ===
-  #Add pomodoros
+  # ADD pomodoros
   def add_pomodoro(db,pomDate,pomTime,tags,description)
     db.execute("INSERT INTO pomodoros (pomDate, pomTime, tags, description) VALUES (?,?,?,?)", [pomDate, pomTime, tags, description])
   end
 
-  #read a string, create an array of tags, and add them to the tags table
-  #e.g. "ruby, book,pairing" => ['ruby','book','pairing']
+  #split string of comma separated tags into an array
+  #e.g. "ruby, book ,Pairing " => ['ruby','book','pairing']
   def parse_tags(tag_str)
     #split string into an array
     tags = tag_str.split(',')
@@ -50,23 +51,22 @@ db.execute(create_table_tags)
     end
   end
 
-  #method to convert an array of tags to a bunch of tag IDs ... and vice versa?
+  #later: read new pomodoro's tags. Add new ones to .tags table.
 
-
-  #pretty print
+  # PRINT pomodoros info in a pretty format
   def pretty_print_poms(selection)
     selection.each do |pom|
       puts "#{pom['id']} | #{pom['pomDate']} | #{pom['pomTime']} | #{pom['tags']} | #{pom['description']}"
     end
   end
 
-  #View all pomodoros
+  # VIEW all pomodoros
   def view_all_poms(db)
     poms = db.execute("SELECT * FROM pomodoros")
     pretty_print_poms(poms)
   end
 
-  #filter pomodoros by
+  # FILTER pomodoros by:
     #date
     def poms_by_date(db,pomDate)
       poms = db.execute("SELECT * FROM pomodoros WHERE pomDate=?", [pomDate])
@@ -86,16 +86,25 @@ db.execute(create_table_tags)
 
     #tag
 
-  #LAAAAAATER stuff
-    #Edit pomodoros
-    #Delete pomodoros
+  # EDIT pomodoros
+    def edit_pom(db,id,attribute,value)
+      case attribute
+      when "date"
+        db.execute("UPDATE pomodoros SET pomDate=? WHERE id=?", [value,id])
+      when "time"
+        db.execute("UPDATE pomodoros SET pomTime=? WHERE id=?", [value,id])
+      when "tags"
+        db.execute("UPDATE pomodoros SET tags=? WHERE id=?", [value,id])
+      when "description"
+        db.execute("UPDATE pomodoros SET tags=? WHERE id=?", [value,id])
+      end
+    end
 
 # === USER INTERFACE ===
-
-puts "TOMATOES EVERYWHERE!"
+puts "TOMATOES EVERYWHAR!"
 user_input = ''
 while user_input != 'q'
-  puts "\n[a]dd pomodoros | [v]iew pomodoros | [q]uit"
+  puts "\n[a]dd pomodoros | [v]iew pomodoros | | [e]dit pomodoro |[q]uit"
   user_input = gets.chomp
   #Add pomodoro
   if user_input =="a"
@@ -119,9 +128,19 @@ while user_input != 'q'
       poms_by_id(db,id)
       #by tag
       end
+  #Edit pomodoro
+  elsif user_input == 'e'
+    puts "Enter pomodoro ID number:"
+    id = gets.chomp
+    poms_by_id(db,id)
+    puts "Which attribute would you like to edit?"
+    puts "date | time | tags | description"
+    attribute = gets.chomp
+    puts "Enter new value"
+    value = gets.chomp
+    edit_pom(db,id,attribute,value)
   end
 end
-
 
 # === DRIVER / TESTING CODE ===
 #some test entries to populate the database
@@ -130,10 +149,13 @@ add_pomodoro(db,'2016-07-19','1:30 PM', 'python','automate the boring stuff')
 add_pomodoro(db,'2016-07-20','2:30 PM','ruby','Sandi Metz book')
 =end
 
+#convert these to tests before extending tags and date methods
 =begin
 view_all_poms(db)
-poms_by_id(db,3)
+
 poms_by_date(db,"2016-07-19")
+edit_pom(db,3,"time","3:30 PM")
+poms_by_id(db,3)
 
 db.execute("INSERT INTO tags(name) VALUES('python')")
 db.execute("INSERT INTO tags(name) VALUES('ruby')")
