@@ -108,7 +108,15 @@ while user_input != 'q'
   user_input = gets.chomp
   #Add pomodoro
   if user_input =="a"
-      puts "add"
+      puts "Date (YYYY-MM-DD): "
+      date = gets.chomp
+      puts "Time (e.g. 2:30 PM): "
+      time = gets.chomp
+      puts "Tags: "
+      tags = gets.chomp
+      puts "Short description: "
+      description = gets.chomp
+      add_pomodoro(db,date,time,tags,description)
   #View pomodoros
   elsif user_input == "v"
       puts "[va] View all | [vd] View by date | [id] View by id"
@@ -161,5 +169,5 @@ db.execute("INSERT INTO tags(name) VALUES('python')")
 db.execute("INSERT INTO tags(name) VALUES('ruby')")
 
 p db.execute("SELECT * FROM pomodoros WHERE tags='nyet';") == []
-p parse_tags("Python, ruby ,JAVASCRIPT ")
+p parse_tags("Python, ruby ,JAVASCRIPT ") #=>['python','ruby','javscript']
 =end
