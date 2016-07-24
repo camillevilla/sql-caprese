@@ -77,25 +77,21 @@ db.execute(create_table_tags)
     def poms_by_date_range(db,date1,date2)
       #BLARGH need some kind of date-parsing method to understand a string as a range
     end
+
+    #id
+    def poms_by_id(db,id)
+      poms = db.execute("SELECT * FROM pomodoros WHERE id=?", [id])
+      pretty_print_poms(poms)
+    end
+
     #tag
-      #need to write some method that splits up a list of tags
-
-  #explore individual pomodoro
-   #figure out the TypeError...can't understand whether the direction is string -> integer or string <- integer
-
-  #  def poms_by_id(db,id)
-  #    poms = db.execute("SELECT * FROM pomodoros WHERE id=?", [id])
-  #    #poms.each do |pom|
-  #      puts "#{poms['id']} | #{poms['pomDate']} | #{poms['pomTime']} | #{poms['tags']} | #{poms['description']}"
-      #end
-  #  end
-
 
   #LAAAAAATER stuff
     #Edit pomodoros
     #Delete pomodoros
 
 # === USER INTERFACE ===
+
 puts "TOMATOES EVERYWHERE!"
 user_input = ''
 while user_input != 'q'
@@ -106,7 +102,7 @@ while user_input != 'q'
       puts "add"
   #View pomodoros
   elsif user_input == "v"
-      puts "[va] View all | [vd] View by date"
+      puts "[va] View all | [vd] View by date | [id] View by id"
       user_input = gets.chomp
       #View all
       if user_input =="va"
@@ -117,6 +113,10 @@ while user_input != 'q'
         date = gets.chomp
         poms_by_date(db,date)
       #by ID
+    elsif user_input =="id"
+      puts "Enter pomodoro ID number: "
+      id = gets.chomp
+      poms_by_id(db,id)
       #by tag
       end
   end
@@ -132,8 +132,9 @@ add_pomodoro(db,'2016-07-20','2:30 PM','ruby','Sandi Metz book')
 
 =begin
 view_all_poms(db)
+poms_by_id(db,3)
 poms_by_date(db,"2016-07-19")
-#poms_by_id(db,3)
+
 db.execute("INSERT INTO tags(name) VALUES('python')")
 db.execute("INSERT INTO tags(name) VALUES('ruby')")
 
